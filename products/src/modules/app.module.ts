@@ -1,10 +1,20 @@
+import databaseConfig from '../configs/databaseConfig';
+import migrationConfig from '../configs/migrationConfig';
 import { Module } from '@nestjs/common';
-import { AppController } from '../controllers/app.controller';
-import { AppService } from '../services/app.service';
-
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductsModule } from './products.module';
+console.log(migrationConfig);
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService]
+  imports: [
+    ConfigModule.forRoot({
+      load: [databaseConfig]
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: () => ({ ...databaseConfig(), autoLoadEntities: true })
+    }),
+    ProductsModule
+  ]
 })
 export class AppModule {}
