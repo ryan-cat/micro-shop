@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: micro-shop/web
+          resources:
+            limits:
+              memory: '1024Mi'
+              cpu: '1000m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-srv
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 3000
+      targetPort: 3000
