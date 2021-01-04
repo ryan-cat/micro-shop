@@ -1,10 +1,10 @@
-import databaseConfig from '../configs/databaseConfig';
-import migrationConfig from '../configs/migrationConfig';
+import databaseConfig from '../configs/database-config';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products.module';
-console.log(migrationConfig);
+import { ProductModule } from './product-module';
+import { GraphQLFederationModule } from '@nestjs/graphql';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,7 +14,11 @@ console.log(migrationConfig);
       imports: [ConfigModule],
       useFactory: () => ({ ...databaseConfig(), autoLoadEntities: true })
     }),
-    ProductsModule
+    GraphQLFederationModule.forRoot({
+      path: '/graphql',
+      autoSchemaFile: true
+    }),
+    ProductModule
   ]
 })
 export class AppModule {}
