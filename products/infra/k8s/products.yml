@@ -15,6 +15,14 @@ spec:
       - name: products
         image: micro-shop/products
         imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        env:
+        - name: POSTGRES_URL
+          value: products-db-srv:5432
+        - name: DATABASE_SSL
+          value: "false"
         resources:
           limits:
             memory: "1024Mi"
@@ -29,4 +37,4 @@ spec:
     app: products
   ports:
   - port: 3000
-    nodePort: 3000
+    targetPort: 3000

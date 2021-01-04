@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  POSTGRES_USERNAME: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: products
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: products-db
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: products-db
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-db
+spec:
+  selector:
+    matchLabels:
+      app: products-db
+  template:
+    metadata:
+      labels:
+        app: products-db
+    spec:
+      containers:
+      - name: products-db
+        image: postgres
+        envFrom:
+        - configMapRef:
+            name: postgres-config
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "1000m"
+        volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: products-db-v
+      volumes:
+        - name: products-db-v
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-db-srv
+spec:
+  selector:
+    app: products-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+
