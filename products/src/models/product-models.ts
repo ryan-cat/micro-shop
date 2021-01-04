@@ -11,6 +11,9 @@ export class Product extends BaseEntity {
   @Column({ length: 1000 })
   description: string;
 
+  @Column({ type: 'text' })
+  imageUrl: string;
+
   @Column({ type: 'numeric' })
   price: number;
 

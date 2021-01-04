@@ -14,6 +14,9 @@ export class ProductDto extends BaseDto {
   description: string;
 
   @Field()
+  imageUrl: string;
+
+  @Field()
   price: number;
 
   @Field()
