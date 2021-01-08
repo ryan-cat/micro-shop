@@ -12,21 +12,24 @@ spec:
         app: products
     spec:
       containers:
-      - name: products
-        image: micro-shop/products
-        imagePullPolicy: IfNotPresent
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        env:
-        - name: POSTGRES_URL
-          value: products-db-srv:5432
-        - name: DATABASE_SSL
-          value: "false"
-        resources:
-          limits:
-            memory: "1024Mi"
-            cpu: "1000m"
+        - name: products
+          image: micro-shop/products
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          env:
+            - name: POSTGRES_URL
+              value: products-db-srv:5432
+            - name: DATABASE_SSL
+              value: 'false'
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1024Mi'
+              cpu: '500m'
 ---
 apiVersion: v1
 kind: Service
@@ -36,5 +39,5 @@ spec:
   selector:
     app: products
   ports:
-  - port: 3000
-    targetPort: 3000
+    - port: 3000
+      targetPort: 3000

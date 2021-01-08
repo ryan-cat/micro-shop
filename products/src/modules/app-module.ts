@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product-module';
-import { GraphQLFederationModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
@@ -13,10 +12,6 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: () => ({ ...databaseConfig(), autoLoadEntities: true })
-    }),
-    GraphQLFederationModule.forRoot({
-      path: '/graphql',
-      autoSchemaFile: true
     }),
     ProductModule
   ]
