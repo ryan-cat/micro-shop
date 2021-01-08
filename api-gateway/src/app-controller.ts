@@ -1,12 +1,13 @@
 import { All, Controller, HttpException, HttpStatus, Inject, Req, Res } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { Request, Response } from 'express';
-import serviceConfigs from './service-configs';
+import { request, Request, Response } from 'express';
+import gatewayConfig from './gateway-config';
 import axios, { AxiosError } from 'axios';
+import * as queryString from 'query-string';
 
 @Controller()
 export class AppController {
-  constructor(@Inject(serviceConfigs.KEY) private configs: ConfigType<typeof serviceConfigs>) {}
+  constructor(@Inject(gatewayConfig.KEY) private config: ConfigType<typeof gatewayConfig>) {}
 
   @All()
   async proxy(@Req() request: Request, @Res() response: Response) {
@@ -15,26 +16,35 @@ export class AppController {
   }
 
   private getProxyUrl(request: Request): string {
-    const pathParts = request.path.split('/');
+    if (this.config.prefix && !request.path.startsWith(this.config.prefix)) {
+      throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
+    }
+
+    let path = request.path;
+    if (this.config.prefix) {
+      path = path.replace(this.config.prefix, '');
+    }
+
+    const pathParts = path.split('/');
     let firstPartOfPath = '/';
 
     if (pathParts.length >= 2) {
       firstPartOfPath = '/' + pathParts[1];
     }
 
-    const service = this.configs.find((x) => x.paths.includes(firstPartOfPath));
+    const service = this.config.services.find((x) => x.paths.includes(firstPartOfPath));
 
     if (!service) {
       throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
     }
 
-    const url = service.url + firstPartOfPath;
+    const url = `${service.url}${firstPartOfPath}?${queryString.stringify(request.query as any)}`;
     return url;
   }
 
   private async performProxy(proxyUrl: string, originalRequest: Request, originalResponse: Response) {
     try {
-      const proxyResponse = await axios.request({ method: originalRequest.method as any, url: proxyUrl, data: originalRequest.body });
+      const proxyResponse = await axios.request({ method: originalRequest.method as any, url: proxyUrl, data: originalRequest.body, headers: request.headers });
       originalResponse.status(proxyResponse.status).header(proxyResponse.headers).send(proxyResponse.data);
     } catch (err) {
       const error = err as AxiosError;
