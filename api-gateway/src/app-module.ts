@@ -1,12 +1,12 @@
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app-controller';
-import serviceConfigs from './service-configs';
+import gatewayConfig from './gateway-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [serviceConfigs]
+      load: [gatewayConfig]
     })
   ],
   controllers: [AppController]
