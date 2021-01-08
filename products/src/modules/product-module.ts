@@ -1,4 +1,3 @@
-import { ProductResolver } from '../graphql/product-graphql';
 import { ProductController } from '../controllers/product-controller';
 import { Product } from '../models/product-models';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +6,7 @@ import { ProductService } from '../services/product-service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product])],
-  providers: [ProductService, ProductResolver],
+  providers: [ProductService],
   controllers: [ProductController]
 })
 export class ProductModule {}
