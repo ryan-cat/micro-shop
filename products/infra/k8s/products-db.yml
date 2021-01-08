@@ -21,7 +21,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/var/data"
+    path: '/var/data'
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -51,16 +51,19 @@ spec:
         app: products-db
     spec:
       containers:
-      - name: products-db
-        image: postgres
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        resources:
-          limits:
-            memory: "1024Mi"
-            cpu: "1000m"
-        volumeMounts:
+        - name: products-db
+          image: postgres
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1024Mi'
+              cpu: '500m'
+          volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: products-db-v
       volumes:
@@ -76,6 +79,5 @@ spec:
   selector:
     app: products-db
   ports:
-  - port: 5432
-    targetPort: 5432
-
+    - port: 5432
+      targetPort: 5432
