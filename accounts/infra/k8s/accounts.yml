@@ -21,6 +21,16 @@ spec:
           env:
             - name: NODE_ENV
               value: DEVELOPMENT
+            - name: JWT_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: accounts-secret
+                  key: JWT_ACCESS_KEY
+            - name: JWT_REFRESH_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: accounts-secret
+                  key: JWT_REFRESH_KEY
           resources:
             requests:
               memory: '512Mi'
