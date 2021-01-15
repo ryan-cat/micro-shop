@@ -13,6 +13,26 @@ export interface ValidationErrorData {
   message: string;
 }
 
+export class UnauthorizedError extends BaseError {
+  constructor(message = 'Failed to authenticate the provided account.') {
+    super();
+
+    this.message = message;
+    this.statusCode = 401;
+    this.name = 'UNAUTHORIZED_ERROR';
+  }
+}
+
+export class NotFoundError extends BaseError {
+  constructor(message = 'The desired resource could not be found.') {
+    super();
+
+    this.message = message;
+    this.statusCode = 404;
+    this.name = 'NOT_FOUND_ERROR';
+  }
+}
+
 export class ValidationError extends BaseError {
   constructor(data: ValidationErrorData[], message = 'The operation could not be performed due to issues with the provided input.') {
     super();

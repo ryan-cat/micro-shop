@@ -2,12 +2,13 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountModule } from './account-module';
-import databaseConfig from 'src/configs/database-config';
+import databaseConfig from '../configs/database-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig]
+      load: [databaseConfig],
+      isGlobal: true
     }),
     MongooseModule.forRootAsync({
       useFactory: databaseConfig

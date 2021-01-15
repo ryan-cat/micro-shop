@@ -1,28 +1,46 @@
-import { All, Controller, HttpException, HttpStatus, Inject, Req, Res } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
+import { All, Controller, HttpException, HttpStatus, Inject, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { ConfigType, ConfigService } from '@nestjs/config';
 import { request, Request, Response } from 'express';
-import gatewayConfig from './gateway-config';
+import gateConfig from './gateway-config';
 import axios, { AxiosError } from 'axios';
 import * as queryString from 'query-string';
+import * as jwt from 'jsonwebtoken';
 
 @Controller()
 export class AppController {
-  constructor(@Inject(gatewayConfig.KEY) private config: ConfigType<typeof gatewayConfig>) {}
+  constructor(@Inject(gateConfig.KEY) private gatewayConfig: ConfigType<typeof gateConfig>, private configService: ConfigService) {}
 
   @All()
   async proxy(@Req() request: Request, @Res() response: Response) {
+    const authToken = request.headers.authorization;
+    if (authToken) {
+      await this.authenticate(authToken);
+    }
+
     const url = this.getProxyUrl(request);
     this.performProxy(url, request, response);
   }
 
+  private authenticate(token: string): Promise<void> {
+    return new Promise((res, rej) => {
+      jwt.verify(token.replace('Bearer ', ''), this.configService.get<string>('JWT_ACCESS_KEY'), {}, async (err) => {
+        if (err || !token.startsWith('Bearer ')) {
+          rej(new UnauthorizedException('The provided token is either expired or invalid.'));
+        }
+
+        return res();
+      });
+    });
+  }
+
   private getProxyUrl(request: Request): string {
-    if (this.config.prefix && !request.path.startsWith(this.config.prefix)) {
+    if (this.gatewayConfig.prefix && !request.path.startsWith(this.gatewayConfig.prefix)) {
       throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
     }
 
     let path = request.path;
-    if (this.config.prefix) {
-      path = path.replace(this.config.prefix, '');
+    if (this.gatewayConfig.prefix) {
+      path = path.replace(this.gatewayConfig.prefix, '');
     }
 
     const pathParts = path.split('/');
@@ -32,13 +50,17 @@ export class AppController {
       firstPartOfPath = '/' + pathParts[1];
     }
 
-    const service = this.config.services.find((x) => x.paths.includes(firstPartOfPath));
+    const service = this.gatewayConfig.services.find((x) => x.paths.includes(firstPartOfPath));
 
     if (!service) {
       throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
     }
 
-    const url = `${service.url}${firstPartOfPath}?${queryString.stringify(request.query as any)}`;
+    let url = `${service.url}/${pathParts.slice(1).join('/')}`;
+
+    if (Object.keys(request.query).length) {
+      url = `${url}?${queryString.stringify(request.query as any)}`;
+    }
     return url;
   }
 
