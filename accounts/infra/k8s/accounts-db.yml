@@ -1,20 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: products-db-config
+  name: accounts-db-config
 data:
-  POSTGRES_USERNAME: postgres
-  POSTGRES_PASSWORD: password
-  POSTGRES_DB: products
-  POSTGRES_URL: products-db-srv:5432
+  MONGO_INITDB_ROOT_USERNAME: mongo
+  MONGO_INITDB_ROOT_PASSWORD: password
+  MONGO_URL: accounts-db-srv:27017
 ---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: products-db-pv
+  name: accounts-db-pv
   labels:
     type: local
-    app: products-db
+    app: accounts-db
 spec:
   storageClassName: manual
   capacity:
@@ -22,14 +21,14 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: '/mnt/data/products-db'
+    path: '/mnt/data/accounts-db'
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: products-db-pv-claim
+  name: accounts-db-pv-claim
   labels:
-    app: products-db
+    app: accounts-db
 spec:
   storageClassName: manual
   accessModes:
@@ -41,22 +40,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: products-db
+  name: accounts-db
 spec:
   selector:
     matchLabels:
-      app: products-db
+      app: accounts-db
   template:
     metadata:
       labels:
-        app: products-db
+        app: accounts-db
     spec:
       containers:
-        - name: products-db
-          image: postgres
+        - name: accounts-db
+          image: mongo
           envFrom:
             - configMapRef:
-                name: products-db-config
+                name: accounts-db-config
           resources:
             requests:
               memory: '512Mi'
@@ -65,20 +64,32 @@ spec:
               memory: '1024Mi'
               cpu: '500m'
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: products-db-v
+            - mountPath: /data/db
+              name: accounts-db-v
       volumes:
-        - name: products-db-v
+        - name: accounts-db-v
           persistentVolumeClaim:
-            claimName: products-db-pv-claim
+            claimName: accounts-db-pv-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-db-srv
+  name: accounts-db-srv
 spec:
   selector:
-    app: products-db
+    app: accounts-db
   ports:
-    - port: 5432
-      targetPort: 5432
+    - port: 27017
+      targetPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-db-np
+spec:
+  type: NodePort
+  selector:
+    app: accounts-db
+  ports:
+    - port: 27017
+      targetPort: 30001

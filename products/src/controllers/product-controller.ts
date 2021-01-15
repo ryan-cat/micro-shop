@@ -2,7 +2,7 @@ import { ProductDto } from '../types/product-types';
 import { ProductService } from '../services/product-service';
 import { Controller, Get } from '@nestjs/common';
 
-@Controller('products')
+@Controller()
 export class ProductController {
   constructor(private productService: ProductService) {}
 

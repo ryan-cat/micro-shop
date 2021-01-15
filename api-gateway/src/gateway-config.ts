@@ -14,6 +14,9 @@ export default registerAs(
   'gateway',
   (): ApiGatewayConfiguration => ({
     prefix: '/api',
-    services: [{ name: 'products', paths: ['/products'], url: 'http://products-srv:3000' }]
+    services: [
+      { name: 'products', paths: ['/products'], url: 'http://products-srv:3000' },
+      { name: 'accounts', paths: ['/accounts'], url: 'http://accounts-srv:3000' }
+    ]
   })
 );

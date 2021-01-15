@@ -1,26 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: products
+  name: accounts
 spec:
   selector:
     matchLabels:
-      app: products
+      app: accounts
   template:
     metadata:
       labels:
-        app: products
+        app: accounts
     spec:
       containers:
-        - name: products
-          image: micro-shop/products
+        - name: accounts
+          image: micro-shop/accounts
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: products-db-config
+                name: accounts-db-config
           env:
-            - name: DATABASE_SSL
-              value: 'false'
             - name: NODE_ENV
               value: DEVELOPMENT
           resources:
@@ -34,10 +32,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-srv
+  name: accounts-srv
 spec:
   selector:
-    app: products
+    app: accounts
   ports:
     - port: 3000
       targetPort: 3000
