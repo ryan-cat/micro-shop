@@ -6,6 +6,7 @@ declare -a arr=(
   "api-gateway"
   "web"
   "products"
+  "accounts"
 )
 
 for i in "${arr[@]}"

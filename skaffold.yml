@@ -34,3 +34,11 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: micro-shop/accounts
+      context: accounts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
