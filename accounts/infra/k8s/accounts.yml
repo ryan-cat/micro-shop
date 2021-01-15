@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accounts
+spec:
+  selector:
+    matchLabels:
+      app: accounts
+  template:
+    metadata:
+      labels:
+        app: accounts
+    spec:
+      containers:
+        - name: accounts
+          image: micro-shop/accounts
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: accounts-db-config
+          env:
+            - name: NODE_ENV
+              value: DEVELOPMENT
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1024Mi'
+              cpu: '500m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accounts-srv
+spec:
+  selector:
+    app: accounts
+  ports:
+    - port: 3000
+      targetPort: 3000
