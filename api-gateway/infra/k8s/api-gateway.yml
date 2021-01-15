@@ -15,6 +15,9 @@ spec:
         - name: api-gateway
           image: micro-shop/api-gateway
           imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_ENV
+              value: DEVELOPMENT
           resources:
             requests:
               memory: '512Mi'
