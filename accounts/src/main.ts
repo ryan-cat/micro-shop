@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ErrorFilter } from './errors';
+import { ErrorFilter } from '@micro-shop/common';
 import { AppModule } from './modules/app-module';
 
 async function bootstrap() {
