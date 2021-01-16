@@ -1,10 +1,11 @@
-import { All, Controller, HttpException, HttpStatus, Inject, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { All, Controller, Inject, Req, Res } from '@nestjs/common';
 import { ConfigType, ConfigService } from '@nestjs/config';
 import { request, Request, Response } from 'express';
 import gateConfig from './gateway-config';
 import axios, { AxiosError } from 'axios';
 import * as queryString from 'query-string';
 import * as jwt from 'jsonwebtoken';
+import { NotFoundError, UnauthorizedError } from '@micro-shop/common';
 
 @Controller()
 export class AppController {
@@ -25,7 +26,7 @@ export class AppController {
     return new Promise((res, rej) => {
       jwt.verify(token.replace('Bearer ', ''), this.configService.get<string>('JWT_ACCESS_KEY'), {}, async (err) => {
         if (err || !token.startsWith('Bearer ')) {
-          rej(new UnauthorizedException('The provided token is either expired or invalid.'));
+          rej(new UnauthorizedError('The provided token is either expired or invalid.'));
         }
 
         return res();
@@ -35,7 +36,7 @@ export class AppController {
 
   private getProxyUrl(request: Request): string {
     if (this.gatewayConfig.prefix && !request.path.startsWith(this.gatewayConfig.prefix)) {
-      throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
+      throw new NotFoundError('The specified path is not applicable.');
     }
 
     let path = request.path;
@@ -53,7 +54,7 @@ export class AppController {
     const service = this.gatewayConfig.services.find((x) => x.paths.includes(firstPartOfPath));
 
     if (!service) {
-      throw new HttpException('Unknown', HttpStatus.NOT_FOUND);
+      throw new NotFoundError('The specified path is not applicable.');
     }
 
     let url = `${service.url}/${pathParts.slice(1).join('/')}`;

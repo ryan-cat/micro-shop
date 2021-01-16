@@ -1,5 +1,4 @@
-import { isMongoUniqueError, NotFoundError, ValidationError, UnauthorizedError } from './../errors';
-import { validate } from './../errors';
+import { isMongoUniqueError, NotFoundError, ValidationError, UnauthorizedError, validate } from '@micro-shop/common';
 import { AuthenticateDtoValidator, SignUpDtoValidator } from './../validators/account-validators';
 import { User, UserDocument } from './../models/account-models';
 import { AuthenticateDto, SignUpDto, AuthenticationResultDto } from './../types/account-types';

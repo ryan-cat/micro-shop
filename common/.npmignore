@@ -1,0 +1,6 @@
+.gitignore
+.prettierrc
+.eslintrcjs
+**.log
+*.lock
+node_modules
