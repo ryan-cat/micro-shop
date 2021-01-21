@@ -1,25 +1,39 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-@Entity('products')
-export class Product extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export type ProductDocument = Product & Document;
 
-  @Column({ length: 100 })
+@Schema({
+  toJSON: {
+    transform: (doc, ret) => {
+      ret.id = doc._id;
+      delete ret._id;
+    }
+  }
+})
+export class Product {
+  @Prop({ required: true })
   name: string;
 
-  @Column({ length: 1000 })
+  @Prop({ required: true })
   description: string;
 
-  @Column({ type: 'text' })
+  @Prop({ required: true })
   imageUrl: string;
 
-  @Column({ type: 'numeric' })
+  @Prop({ required: true })
   price: number;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @Prop()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @Prop()
   updatedAt: Date;
 }
+
+export const ProductSchema = SchemaFactory.createForClass<Product, ProductDocument>(Product);
+
+ProductSchema.pre('save', function () {
+  this.set('createdAt', this.get('createdAt') || new Date());
+  this.set('updatedAt', new Date());
+});

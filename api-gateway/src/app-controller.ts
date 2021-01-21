@@ -67,7 +67,12 @@ export class AppController {
 
   private async performProxy(proxyUrl: string, originalRequest: Request, originalResponse: Response) {
     try {
-      const proxyResponse = await axios.request({ method: originalRequest.method as any, url: proxyUrl, data: originalRequest.body, headers: request.headers });
+      const proxyResponse = await axios.request({
+        method: originalRequest.method as any,
+        url: proxyUrl,
+        data: originalRequest.body,
+        headers: originalRequest.headers
+      });
       originalResponse.status(proxyResponse.status).header(proxyResponse.headers).send(proxyResponse.data);
     } catch (err) {
       const error = err as AxiosError;
