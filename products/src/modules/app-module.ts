@@ -1,17 +1,16 @@
 import databaseConfig from '../configs/database-config';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product-module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [databaseConfig]
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: () => ({ ...databaseConfig(), autoLoadEntities: true })
+    MongooseModule.forRootAsync({
+      useFactory: databaseConfig
     }),
     ProductModule
   ]

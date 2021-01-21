@@ -3,10 +3,9 @@ kind: ConfigMap
 metadata:
   name: products-db-config
 data:
-  POSTGRES_USERNAME: postgres
-  POSTGRES_PASSWORD: password
-  POSTGRES_DB: products
-  POSTGRES_URL: products-db-srv:5432
+  MONGO_INITDB_ROOT_USERNAME: mongo
+  MONGO_INITDB_ROOT_PASSWORD: password
+  MONGO_URL: products-db-srv:27017
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -53,7 +52,7 @@ spec:
     spec:
       containers:
         - name: products-db
-          image: postgres
+          image: mongo
           envFrom:
             - configMapRef:
                 name: products-db-config
@@ -65,7 +64,7 @@ spec:
               memory: '1024Mi'
               cpu: '500m'
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
+            - mountPath: /data/db
               name: products-db-v
       volumes:
         - name: products-db-v
@@ -80,5 +79,5 @@ spec:
   selector:
     app: products-db
   ports:
-    - port: 5432
-      targetPort: 5432
+    - port: 27017
+      targetPort: 27017
