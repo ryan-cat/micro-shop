@@ -9,3 +9,10 @@ export class ProductDto extends BaseDto {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export class CreateProductDto {
+  name: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+}
