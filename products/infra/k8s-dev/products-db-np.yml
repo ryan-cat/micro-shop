@@ -7,5 +7,5 @@ spec:
   selector:
     app: products-db
   ports:
-  - port: 5432
-    nodePort: 30000
+    - port: 27017
+      nodePort: 30000

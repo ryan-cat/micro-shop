@@ -1,18 +1,11 @@
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { MongooseModuleOptions } from '@nestjs/mongoose';
 
-export default (): PostgresConnectionOptions => {
-  const config: PostgresConnectionOptions = {
-    type: 'postgres',
-    url: `postgres://${process.env.POSTGRES_USERNAME}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}/${process.env.POSTGRES_DB}`,
-    ssl:
-      process.env.DATABASE_SSL === 'true' || process.env.DATABASE_SSL === undefined
-        ? {
-            rejectUnauthorized: false
-          }
-        : undefined,
-    cli: {
-      migrationsDir: 'src/migrations'
-    }
-  };
-  return config;
-};
+export default (): MongooseModuleOptions => ({
+  uri: `mongodb://${process.env.MONGO_URL}/products`,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  user: process.env.MONGO_INITDB_ROOT_USERNAME,
+  pass: process.env.MONGO_INITDB_ROOT_PASSWORD,
+  authSource: 'admin'
+});
