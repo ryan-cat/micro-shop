@@ -8,6 +8,7 @@ export type ProductDocument = Product & Document;
     transform: (doc, ret) => {
       ret.id = doc._id;
       delete ret._id;
+      delete ret.__v;
     }
   }
 })
@@ -23,6 +24,9 @@ export class Product {
 
   @Prop({ required: true })
   price: number;
+
+  @Prop({ required: true })
+  sellerId: string;
 
   @Prop()
   createdAt: Date;
