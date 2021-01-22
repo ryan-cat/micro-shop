@@ -10,6 +10,7 @@ export type UserDocument = User & Document;
       ret.id = doc._id;
       delete ret._id;
       delete ret.password;
+      delete ret.__v;
     }
   }
 })
