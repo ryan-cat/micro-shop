@@ -6,7 +6,7 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface CreateAccountResponse {
+export interface AuthenticationResult {
   accessToken: string;
   refreshToken: string;
   user: User;

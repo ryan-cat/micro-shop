@@ -18,9 +18,8 @@ export const rootReducer = (state: any, action: any) => {
   // when a logout action is dispatched it will reset redux state
   if (action.type === 'LOG_OUT') {
     state = undefined;
+    localStorage.removeItem('token');
   }
-
-  localStorage.removeItem('token');
 
   return reducers(state, action);
 };

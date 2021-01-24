@@ -8,12 +8,12 @@ import { AuthenticationResult } from '../types/auth-types';
 import { logIn } from '../store/actions/auth-actions';
 import { useDispatch } from 'react-redux';
 
-const CreateAccount: React.FC = () => {
-  const [form, setForm] = useState({ email: '', name: '', password: '' });
-  const [{ loading }, createAccount] = useAxios<AuthenticationResult, any>(
+const LogIn: React.FC = () => {
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [{ loading }, callLogIn] = useAxios<AuthenticationResult, any>(
     {
       method: 'POST',
-      url: '/accounts'
+      url: '/accounts/authenticate'
     },
     { manual: true }
   );
@@ -25,7 +25,7 @@ const CreateAccount: React.FC = () => {
 
   const handleCreate = async () => {
     try {
-      const response = await createAccount({
+      const response = await callLogIn({
         data: form
       });
 
@@ -39,7 +39,7 @@ const CreateAccount: React.FC = () => {
 
   return (
     <Container centerContent mt="30px" p="25px" border="1px" borderRadius={5} borderColor="gray.300">
-      <Heading>Create an Account</Heading>
+      <Heading>Log In</Heading>
 
       {message && (
         <Alert status="error" borderRadius="5px" mt="10px">
@@ -55,12 +55,6 @@ const CreateAccount: React.FC = () => {
         <FormErrorMessage>{validationErrors.getValidationError('email')}</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt="25px" isInvalid={validationErrors.hasValidationError('name')}>
-        <FormLabel>Name</FormLabel>
-        <Input name="name" value={form.name} onChange={(e) => handleTextChange(e, setForm)} />
-        <FormErrorMessage>{validationErrors.getValidationError('name')}</FormErrorMessage>
-      </FormControl>
-
       <FormControl mt="25px" isInvalid={validationErrors.hasValidationError('password')}>
         <FormLabel>Password</FormLabel>
         <Input name="password" type="password" value={form.password} onChange={(e) => handleTextChange(e, setForm)} />
@@ -68,10 +62,10 @@ const CreateAccount: React.FC = () => {
       </FormControl>
 
       <Button mt="25px" colorScheme="brand" isLoading={loading} onClick={handleCreate}>
-        Create
+        Log In
       </Button>
     </Container>
   );
 };
 
-export default CreateAccount;
+export default LogIn;
