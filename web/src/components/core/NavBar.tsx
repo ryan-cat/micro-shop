@@ -15,7 +15,7 @@ const NavBar: React.FC = (props) => {
 
         {!isAuthenticated && (
           <Box>
-            <Button bg="transparent" marginRight="5px">
+            <Button as={Link} to="log-in" bg="transparent" marginRight="5px">
               Log In
             </Button>
 
