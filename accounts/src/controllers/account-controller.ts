@@ -1,6 +1,5 @@
-import { User } from './../models/account-models';
 import { AuthenticateDto, AuthenticationResultDto, SignUpDto } from './../types/account-types';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AccountService } from '../services/account-service';
 
 @Controller()
@@ -13,7 +12,8 @@ export class AccountController {
   }
 
   @Post()
-  signUp(@Body() body: SignUpDto): Promise<User> {
+  @HttpCode(HttpStatus.CREATED)
+  signUp(@Body() body: SignUpDto): Promise<AuthenticationResultDto> {
     return this.accountService.signUp(body);
   }
 }

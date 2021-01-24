@@ -2,7 +2,7 @@ import { AuthUser, AuthenticatedUser } from '@micro-shop/common';
 import { CreateProductDto } from '../types/product-types';
 import { Product } from './../models/product-models';
 import { ProductService } from '../services/product-service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
 @Controller()
 export class ProductController {
@@ -14,6 +14,7 @@ export class ProductController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createProduct(@Body() dto: CreateProductDto, @AuthUser() user: AuthenticatedUser): Promise<any> {
     return this.productService.createProduct(user, dto);
   }
