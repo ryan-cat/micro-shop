@@ -38,15 +38,24 @@ export class AccountService {
     };
   }
 
-  async signUp(dto: SignUpDto): Promise<User> {
+  async signUp(dto: SignUpDto): Promise<AuthenticationResultDto> {
     validate(dto, SignUpDtoValidator);
 
     try {
-      return await this.userModel.create({
+      const user = await this.userModel.create({
         email: dto.email,
         name: dto.name,
         password: dto.password
       });
+
+      const accessToken = await this.getAccessToken(user.id, user.name, user.email);
+      const refreshToken = await this.getRefreshToken(user.id);
+
+      return {
+        user,
+        accessToken,
+        refreshToken
+      };
     } catch (err) {
       if (isMongoUniqueError(err, 'email')) {
         throw new ValidationError([{ path: ['email'], message: 'An account with this email already exists.' }]);
