@@ -33,6 +33,16 @@ export class NotFoundError extends BaseError {
   }
 }
 
+export class BadRequestError extends BaseError {
+  constructor(message = 'The provided input is invalid for this request.') {
+    super();
+
+    this.message = message;
+    this.statusCode = 400;
+    this.name = 'BAD_REQUEST';
+  }
+}
+
 export class ValidationError extends BaseError {
   constructor(data: ValidationErrorData[], message = 'The operation could not be performed due to issues with the provided input.') {
     super();
