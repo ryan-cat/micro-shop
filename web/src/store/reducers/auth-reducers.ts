@@ -22,6 +22,12 @@ const authReducer = (state: AuthState = initialState, action: AuthActions) => {
         isAuthenticated: true,
         accessToken: action.accessToken
       };
+    case 'REFRESH_ACCESS_TOKEN':
+      return {
+        ...state,
+        isAuthenticated: true,
+        accessToken: action.accessToken
+      };
     default:
       return state;
   }
