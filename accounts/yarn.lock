@@ -546,14 +546,15 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@micro-shop/common@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@micro-shop/common/-/common-0.0.1.tgz#dfddf84af2a97141523f6e0354e5786a62e6bdfc"
-  integrity sha512-8c6Ob+bn+Ess7Ji2garXndNBoAtx1Gog63lAFGhhaS/irhMfLuvP3hMGVQXTdiDUydOD+N/pIq4PZ8xHetlCsg==
+"@micro-shop/common@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@micro-shop/common/-/common-0.0.4.tgz#a2c33a4334992239bb17f9483564b7fc3d6c33c7"
+  integrity sha512-YKemuBqlBziO4FX9aBlUguP2wPuaCNO+m1LDscSUWJlN6wauRK+PdhjsTlpTbyfDXvD4QEJNAEFCsfLKm8W7ZQ==
   dependencies:
     "@nestjs/common" "^7.6.5"
     express "^4.17.1"
     joi "^17.3.0"
+    jsonwebtoken "^8.5.1"
     reflect-metadata "^0.1.13"
     rxjs "^6.6.3"
 

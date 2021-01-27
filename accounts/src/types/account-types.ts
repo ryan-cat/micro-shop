@@ -15,3 +15,12 @@ export class AuthenticationResultDto {
   refreshToken: string;
   user: User;
 }
+
+export class TokenRefreshDto {
+  refreshToken: string;
+}
+
+export class TokenRefreshResultDto {
+  accessToken: string;
+  refreshToken: string;
+}
