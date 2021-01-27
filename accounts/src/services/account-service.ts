@@ -134,7 +134,6 @@ export class AccountService {
     return new Promise((res, rej) => {
       jwt.verify(token, this.configService.get<string>('JWT_REFRESH_KEY'), (err, result) => {
         if (err) {
-          console.log(err);
           rej(err);
         }
 
