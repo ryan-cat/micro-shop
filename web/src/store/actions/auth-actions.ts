@@ -11,3 +11,12 @@ export const logIn = (response: AuthenticationResult) => (dispatch: Dispatch<Aut
     accessToken: response.accessToken
   });
 };
+
+export const refreshTokens = (accessToken: string, refreshToken: string) => (dispatch: Dispatch<AuthActions>) => {
+  localStorage.setItem('token', refreshToken);
+
+  dispatch({
+    type: 'REFRESH_ACCESS_TOKEN',
+    accessToken
+  });
+};
