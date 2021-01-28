@@ -1,9 +1,9 @@
 import { AuthenticationResult } from './../../types/auth-types';
-import { AuthActions } from '../types/auth-types';
+import { AuthActions, REFRESH_TOKEN } from '../types/auth-types';
 import { Dispatch } from 'redux';
 
 export const logIn = (response: AuthenticationResult) => (dispatch: Dispatch<AuthActions>) => {
-  localStorage.setItem('token', response.refreshToken);
+  localStorage.setItem(REFRESH_TOKEN, response.refreshToken);
 
   dispatch({
     type: 'LOG_IN',
@@ -13,7 +13,7 @@ export const logIn = (response: AuthenticationResult) => (dispatch: Dispatch<Aut
 };
 
 export const refreshTokens = (accessToken: string, refreshToken: string) => (dispatch: Dispatch<AuthActions>) => {
-  localStorage.setItem('token', refreshToken);
+  localStorage.setItem(REFRESH_TOKEN, refreshToken);
 
   dispatch({
     type: 'REFRESH_ACCESS_TOKEN',
@@ -22,7 +22,7 @@ export const refreshTokens = (accessToken: string, refreshToken: string) => (dis
 };
 
 export const logOut = (manualLogOut: boolean = false) => (dispatch: Dispatch<AuthActions>) => {
-  localStorage.removeItem('token');
+  localStorage.removeItem(REFRESH_TOKEN);
 
   dispatch({
     type: 'LOG_OUT',

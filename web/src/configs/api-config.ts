@@ -3,14 +3,14 @@ import { RootState } from './../store/index';
 import { configure } from 'axios-hooks';
 import axios, { AxiosError } from 'axios';
 import store from '../store';
+import { REFRESH_TOKEN } from '../store/types/auth-types';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const state: RootState = store.getState();
-  const token = state.auth.accessToken;
+axiosInstance.interceptors.request.use(async (config) => {
+  const token = await getAccessToken();
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -19,48 +19,47 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+const getAccessToken = async (): Promise<string | null> => {
+  const rootState: RootState = store.getState();
+  const accessToken = rootState.auth.accessToken;
+
+  if (accessToken) {
+    return accessToken;
+  } else {
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+
+    if (refreshToken) {
+      const res = await fetch(process.env.REACT_APP_API_URL + '/accounts/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          refreshToken
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+
+        store.dispatch(refreshTokens(data.accessToken, data.refreshToken) as any);
+
+        return data.accessToken;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+};
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (err: AxiosError) => {
-    return new Promise(async (resolve, reject) => {
-      const originalReq = err.config;
-
-      // @ts-ignore
-      if (err.response?.status === 401 && originalReq && !originalReq._retry) {
-        // @ts-ignore
-        originalReq._retry = true;
-
-        const refreshToken = localStorage.getItem('token');
-        if (!refreshToken) {
-          // log out
-          store.dispatch(logOut() as any);
-        } else {
-          const res = await fetch(process.env.REACT_APP_API_URL + '/accounts/token', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              refreshToken
-            })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-
-            store.dispatch(refreshTokens(data.accessToken, data.refreshToken) as any);
-
-            originalReq.headers.Authorization = `Bearer ${data.accessToken}`;
-            resolve(axios(originalReq));
-          } else {
-            if (res.status === 400) {
-              store.dispatch(logOut() as any);
-            }
-          }
-        }
-      }
-      return reject(err);
-    });
+    if (err.response?.status === 401) {
+      store.dispatch(logOut() as any);
+    }
   }
 );
 

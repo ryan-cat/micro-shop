@@ -1,5 +1,6 @@
+import jwtDecode from 'jwt-decode';
 import { User } from '../../types/auth-types';
-import { AuthActions } from '../types/auth-types';
+import { AuthActions, REFRESH_TOKEN } from '../types/auth-types';
 
 export interface AuthState {
   user: User;
@@ -8,9 +9,24 @@ export interface AuthState {
   manualLogOut: boolean;
 }
 
+const isInitialAuthenticated = () => {
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+
+  if (!refreshToken) {
+    return false;
+  }
+
+  try {
+    const decodedToken = jwtDecode(refreshToken) as any;
+    return decodedToken.exp > new Date().getTime() / 1000;
+  } catch (err) {
+    return false;
+  }
+};
+
 const initialState: AuthState = {
   user: {} as User,
-  isAuthenticated: !!localStorage.getItem('token'),
+  isAuthenticated: isInitialAuthenticated(),
   accessToken: null,
   manualLogOut: false
 };
