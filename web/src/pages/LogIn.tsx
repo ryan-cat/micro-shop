@@ -1,6 +1,5 @@
 import { Container, FormControl, FormLabel, Heading, Input, Button, Alert, AlertIcon, AlertDescription, CloseButton, FormErrorMessage } from '@chakra-ui/react';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { handleTextChange } from '../utils/form-utilts';
 import useAxios from 'axios-hooks';
 import useApiErrorHandler from '../hooks/useApiErrorHandler';
@@ -20,7 +19,6 @@ const LogIn: React.FC = () => {
 
   const { setError, message, clearMessage, validationErrors } = useApiErrorHandler();
 
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const handleCreate = async () => {
@@ -30,8 +28,6 @@ const LogIn: React.FC = () => {
       });
 
       dispatch(logIn(response.data));
-
-      history.push('/');
     } catch (err) {
       setError(err);
     }

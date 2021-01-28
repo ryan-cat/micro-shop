@@ -1,4 +1,4 @@
-import { refreshTokens } from './../store/actions/auth-actions';
+import { refreshTokens, logOut } from './../store/actions/auth-actions';
 import { RootState } from './../store/index';
 import { configure } from 'axios-hooks';
 import axios, { AxiosError } from 'axios';
@@ -33,6 +33,7 @@ axiosInstance.interceptors.response.use(
         const refreshToken = localStorage.getItem('token');
         if (!refreshToken) {
           // log out
+          store.dispatch(logOut() as any);
         } else {
           const res = await fetch(process.env.REACT_APP_API_URL + '/accounts/token', {
             method: 'POST',
@@ -53,7 +54,7 @@ axiosInstance.interceptors.response.use(
             resolve(axios(originalReq));
           } else {
             if (res.status === 400) {
-              console.log('logout');
+              store.dispatch(logOut() as any);
             }
           }
         }

@@ -25,7 +25,7 @@ export class AccountService {
     const passwordCheck = await bcrypt.compare(dto.password, user.password);
 
     if (!passwordCheck) {
-      throw new UnauthorizedError('Incorrect password provided for this account.');
+      throw new BadRequestError('Incorrect password provided for this account.');
     }
 
     const accessToken = await this.getAccessToken(user.id, user.name, user.email);

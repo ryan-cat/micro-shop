@@ -20,3 +20,18 @@ export const refreshTokens = (accessToken: string, refreshToken: string) => (dis
     accessToken
   });
 };
+
+export const logOut = (manualLogOut: boolean = false) => (dispatch: Dispatch<AuthActions>) => {
+  localStorage.removeItem('token');
+
+  dispatch({
+    type: 'LOG_OUT',
+    manualLogOut
+  });
+};
+
+export const resetManualLogOut = () => (dispatch: Dispatch<AuthActions>) => {
+  dispatch({
+    type: 'RESET_MANUAL_LOG_OUT'
+  });
+};
