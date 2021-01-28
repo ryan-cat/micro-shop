@@ -5,15 +5,17 @@ export interface AuthState {
   user: User;
   isAuthenticated: boolean;
   accessToken: string | null;
+  manualLogOut: boolean;
 }
 
 const initialState: AuthState = {
   user: {} as User,
   isAuthenticated: !!localStorage.getItem('token'),
-  accessToken: null
+  accessToken: null,
+  manualLogOut: false
 };
 
-const authReducer = (state: AuthState = initialState, action: AuthActions) => {
+const authReducer = (state: AuthState = initialState, action: AuthActions): AuthState => {
   switch (action.type) {
     case 'LOG_IN':
       return {
@@ -27,6 +29,19 @@ const authReducer = (state: AuthState = initialState, action: AuthActions) => {
         ...state,
         isAuthenticated: true,
         accessToken: action.accessToken
+      };
+    case 'LOG_OUT':
+      return {
+        ...state,
+        user: {} as User,
+        isAuthenticated: false,
+        accessToken: null,
+        manualLogOut: action.manualLogOut
+      };
+    case 'RESET_MANUAL_LOG_OUT':
+      return {
+        ...state,
+        manualLogOut: false
       };
     default:
       return state;
