@@ -1,6 +1,6 @@
 {
   "name": "@micro-shop/common",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
+    "node-nats-streaming": "^0.3.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3"
   },
