@@ -4,7 +4,6 @@ NC='\033[0m'
 
 declare -a arr=(
   "api-gateway"
-  "web"
   "products"
   "accounts"
 )
