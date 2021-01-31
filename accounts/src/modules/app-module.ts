@@ -1,3 +1,4 @@
+import { EventBusModule } from '@micro-shop/common';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,7 +14,13 @@ import databaseConfig from '../configs/database-config';
     MongooseModule.forRootAsync({
       useFactory: databaseConfig
     }),
-    AccountModule
+    AccountModule,
+    EventBusModule.register({
+      url: process.env.EVENT_BUS_URL,
+      transportOptions: {
+        queueName: 'accounts-service'
+      }
+    })
   ]
 })
 export class AppModule {}
