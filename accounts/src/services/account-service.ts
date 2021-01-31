@@ -1,4 +1,4 @@
-import { isMongoUniqueError, NotFoundError, ValidationError, UnauthorizedError, validate, BadRequestError } from '@micro-shop/common';
+import { isMongoUniqueError, NotFoundError, ValidationError, validate, BadRequestError, EventBus } from '@micro-shop/common';
 import { AuthenticateDtoValidator, SignUpDtoValidator } from './../validators/account-validators';
 import { User, UserDocument } from './../models/account-models';
 import { AuthenticateDto, SignUpDto, AuthenticationResultDto, TokenRefreshDto, TokenRefreshResultDto } from './../types/account-types';
@@ -8,10 +8,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
+import { UserCreatedEvent, EventBusTopics } from '@micro-shop/common';
 
 @Injectable()
 export class AccountService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private configService: ConfigService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private bus: EventBus, private configService: ConfigService) {}
 
   async authenticate(dto: AuthenticateDto): Promise<AuthenticationResultDto> {
     validate(dto, AuthenticateDtoValidator);
@@ -50,6 +51,11 @@ export class AccountService {
 
       const accessToken = await this.getAccessToken(user.id, user.name, user.email);
       const refreshToken = await this.getRefreshToken(user.id);
+
+      this.bus.publish<UserCreatedEvent>({
+        topic: EventBusTopics.UserCreated,
+        data: user as UserCreatedEvent['data']
+      });
 
       return {
         user,

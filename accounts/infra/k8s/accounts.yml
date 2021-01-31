@@ -18,6 +18,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: accounts-db-config
+            - configMapRef:
+                name: event-bus-config
           env:
             - name: NODE_ENV
               value: DEVELOPMENT
