@@ -10,16 +10,16 @@ export class AccountSubscriptions implements OnApplicationBootstrap {
   constructor(private bus: EventBus, @InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   onApplicationBootstrap() {
-    this.bus.subscribe(EventBusTopics.UserCreated, (data, msg) => this.handleUserCreated(this.userModel, data, msg));
+    this.bus.subscribe(EventBusTopics.UserCreated, this.handleUserCreated);
   }
 
-  public async handleUserCreated(userModel: Model<UserDocument>, data: UserCreatedEvent['data'], message) {
-    await userModel.create({
+  public handleUserCreated = async (data: UserCreatedEvent['data'], message) => {
+    await this.userModel.create({
       _id: data.id,
       name: data.name,
       email: data.email,
       updatedAt: data.updatedAt
     });
     message.ack();
-  }
+  };
 }
