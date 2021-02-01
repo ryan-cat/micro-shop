@@ -9,6 +9,7 @@ export type UserDocument = User & Document;
       ret.id = doc._id;
       delete ret._id;
       delete ret.__v;
+      delete ret.updatedAt;
     }
   }
 })
