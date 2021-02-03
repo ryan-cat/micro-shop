@@ -1,6 +1,7 @@
 import { NatsEventBus } from './nats-event-bus';
 import { EventBus, IEventHandler } from './event-bus';
-import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
+import { DynamicModule, Global, Module, OnApplicationShutdown, Provider } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { randomBytes } from 'crypto';
 import * as nats from 'node-nats-streaming';
 
@@ -46,7 +47,9 @@ export interface EventBusModuleOptions {
 
 @Global()
 @Module({})
-export class EventBusModule {
+export class EventBusModule implements OnApplicationShutdown {
+  constructor(private readonly moduleRef: ModuleRef) {}
+
   static register(options: EventBusModuleOptions): DynamicModule {
     const bus = setupNATS(options, (bus) => addSubscriptions(bus, options.subscriptions));
 
@@ -60,5 +63,10 @@ export class EventBusModule {
       providers: [provider],
       exports: [provider]
     };
+  }
+
+  onApplicationShutdown() {
+    const bus = this.moduleRef.get<EventBus>(typeof EventBus);
+    bus && bus.close();
   }
 }
