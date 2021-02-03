@@ -21,6 +21,10 @@ export class NatsEventBus extends EventBus<Stan, Message> {
     });
   }
 
+  close() {
+    this.client.close();
+  }
+
   private parseIncomingMessage(msg: Message) {
     const data = msg.getData();
     return typeof data === 'string' ? JSON.parse(data) : JSON.parse(data.toString('utf8'));
@@ -28,10 +32,5 @@ export class NatsEventBus extends EventBus<Stan, Message> {
 
   private subscriptionOptions() {
     return this.client.subscriptionOptions().setManualAckMode(true).setStartWithLastReceived().setAckWait(this.ackWait).setDurableName(this.queueName);
-  }
-
-  gracefulShutdown() {
-    process.on('SIGINT', () => this.client.close());
-    process.on('SIGTERM', () => this.client.close());
   }
 }

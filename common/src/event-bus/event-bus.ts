@@ -12,10 +12,9 @@ export abstract class EventBus<TClient = any, TMessage = any> {
   constructor(client: TClient, queueName: string) {
     this.client = client;
     this.queueName = queueName;
-    this.gracefulShutdown();
   }
 
   abstract publish<E extends IEvent>(event: E): void;
   abstract subscribe<E extends IEvent>(topic: E['topic'], handler: IEventHandler<E, TMessage>): void;
-  abstract gracefulShutdown(): void;
+  abstract close(): void;
 }
