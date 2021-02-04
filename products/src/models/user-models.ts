@@ -17,10 +17,10 @@ export class User {
   @Prop({ type: Types.ObjectId })
   _id: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   name: string;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true, required: true, type: String })
   email: string;
 
   @Prop()
