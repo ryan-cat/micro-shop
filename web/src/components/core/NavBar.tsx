@@ -21,7 +21,7 @@ const NavBar: React.FC = (props) => {
 
         {!isAuthenticated ? (
           <Box>
-            <Button as={Link} to="log-in" bg="transparent" marginRight="5px">
+            <Button as={Link} to="log-in" bg="transparent" mr="5px">
               Log In
             </Button>
 
@@ -30,9 +30,17 @@ const NavBar: React.FC = (props) => {
             </Button>
           </Box>
         ) : (
-          <Button bg="transparent" onClick={handleLogOut}>
-            Log Out
-          </Button>
+          <>
+            <Box>
+              <Button as={Link} to="/sell-product" color="brand.500" mr="10px">
+                Sell a Product
+              </Button>
+
+              <Button bg="transparent" onClick={handleLogOut}>
+                Log Out
+              </Button>
+            </Box>
+          </>
         )}
       </Flex>
     </Flex>

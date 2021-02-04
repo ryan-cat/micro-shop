@@ -1,4 +1,4 @@
-import { Container, FormControl, FormLabel, Heading, Input, Button, Alert, AlertIcon, AlertDescription, CloseButton, FormErrorMessage } from '@chakra-ui/react';
+import { Container, FormControl, FormLabel, Heading, Input, Button, FormErrorMessage } from '@chakra-ui/react';
 import { useState } from 'react';
 import { handleTextChange } from '../utils/form-utilts';
 import useAxios from 'axios-hooks';
@@ -6,6 +6,7 @@ import useApiErrorHandler from '../hooks/useApiErrorHandler';
 import { AuthenticationResult } from '../types/auth-types';
 import { logIn } from '../store/actions/auth-actions';
 import { useDispatch } from 'react-redux';
+import { Alert } from '../ui';
 
 const CreateAccount: React.FC = () => {
   const [form, setForm] = useState({ email: '', name: '', password: '' });
@@ -37,13 +38,7 @@ const CreateAccount: React.FC = () => {
     <Container centerContent mt="30px" p="25px" border="1px" borderRadius={5} borderColor="gray.300">
       <Heading>Create an Account</Heading>
 
-      {message && (
-        <Alert status="error" borderRadius="5px" mt="10px">
-          <AlertIcon />
-          <AlertDescription>{message}</AlertDescription>
-          <CloseButton position="absolute" right="8px" top="8px" onClick={clearMessage} />
-        </Alert>
-      )}
+      {message && <Alert message={message} mt="10px" onClose={clearMessage} />}
 
       <FormControl mt="25px" isInvalid={validationErrors.hasValidationError('email')}>
         <FormLabel>Email Address</FormLabel>
