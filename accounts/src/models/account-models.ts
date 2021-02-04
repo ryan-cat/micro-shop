@@ -15,13 +15,13 @@ export type UserDocument = User & Document;
   }
 })
 export class User {
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   name: string;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true, required: true, type: String, lowercase: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   password: string;
 
   @Prop()
@@ -34,9 +34,6 @@ export class User {
 export const UserSchema = SchemaFactory.createForClass<User, UserDocument>(User);
 
 UserSchema.pre('save', async function (done) {
-  const email: string = this.get('email');
-  this.set('email', email.toLowerCase());
-
   const hashedPassword = await bcrypt.hash(this.get('password'), 10);
   this.set('password', hashedPassword);
 

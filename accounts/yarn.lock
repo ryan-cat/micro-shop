@@ -646,10 +646,10 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
-"@nestjs/mongoose@^7.2.1":
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-7.2.1.tgz#2cd8cb001d2365104a69972c073c12a9d26f2d73"
-  integrity sha512-KFpWwmnl+Uv5c1TceymAsclI8afXaT7TJfTFUCj/vzhbB97ZSX3eQb4mIeQl6WdqAGGNuOUFCVy8/Phk2w541A==
+"@nestjs/mongoose@^7.2.2":
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-7.2.2.tgz#6922373a0469eb3ecad0cd6dbb4ae18f2dde4b16"
+  integrity sha512-Ubl3uEczpM8GMebOBpBPx3oGj5Nea3SUAoKh4L6u41HE+JuAcaJz9uY/1Advh/9qXGmWOgO4nXoDLAazMvR41A==
 
 "@nestjs/platform-express@^7.5.1":
   version "7.6.5"
@@ -4431,10 +4431,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.11.11:
-  version "5.11.11"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.11.11.tgz#f0f1b3691385aa8cf0e4acdec20f1851bb6f9660"
-  integrity sha512-JgKKAosJf6medPOZi2LmO7sMz7Sg00mgjyPAKari3alzL+R/n8D+zKK29iGtJpNNtv9IKy14H37CWuiaZ7016w==
+mongoose@^5.11.15:
+  version "5.11.15"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.11.15.tgz#ee8ba751c83ee21f4b399aba7cb10276dd316320"
+  integrity sha512-8T4bT6eCGB7MqCm40oVhnhT/1AyAdwe+y1rYUhdl3ljsks3BpYz8whZgcMkIoh6VoCCjipOXRqZqdk1UByvlYA==
   dependencies:
     "@types/mongodb" "^3.5.27"
     bson "^1.1.4"

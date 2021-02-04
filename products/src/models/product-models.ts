@@ -14,16 +14,16 @@ export type ProductDocument = Product & Document;
   }
 })
 export class Product {
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   description: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   imageUrl: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Number })
   price: number;
 
   @Prop({ required: true, type: Types.ObjectId, ref: User.name })

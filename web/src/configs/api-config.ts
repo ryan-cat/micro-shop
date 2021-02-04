@@ -59,6 +59,8 @@ axiosInstance.interceptors.response.use(
   (err: AxiosError) => {
     if (err.response?.status === 401) {
       store.dispatch(logOut() as any);
+    } else {
+      throw err;
     }
   }
 );
