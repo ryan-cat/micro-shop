@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as queryString from 'query-string';
 import { resetManualLogOut } from '../../store/actions/auth-actions';
 import { useEffect } from 'react';
+import SellProduct from '../../pages/SellProduct';
 
 const UnauthenticatedRoute: React.FC<RouteProps> = (props) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -58,6 +59,9 @@ const Routes = () => {
       <Route exact path="/">
         <Home />
       </Route>
+      <PrivateRoute path="/sell-product">
+        <SellProduct />
+      </PrivateRoute>
     </Switch>
   );
 };
