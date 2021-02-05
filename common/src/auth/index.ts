@@ -9,6 +9,8 @@ export interface AuthTokenPayload {
   expiresAt: Date;
 }
 
+const unauthorizedError = new UnauthorizedError('You must be authenticated to perform this operation.');
+
 export class AuthenticatedUser {
   protected _sub: string;
   protected _name: string;
@@ -45,7 +47,7 @@ export class AuthenticatedUser {
 
   protected safeGet(val: any): any {
     if (!this.isAuthenticated) {
-      throw new UnauthorizedError('You must be authenticated to perform this operation.');
+      throw unauthorizedError;
     }
 
     return val;
@@ -61,12 +63,16 @@ export const decodeAuthToken = (token: string): AuthTokenPayload | null => {
 };
 
 export const AuthUser = createParamDecorator(
-  (_, ctx: ExecutionContext): AuthenticatedUser => {
+  (data: { required: boolean }, ctx: ExecutionContext): AuthenticatedUser => {
     const req = ctx.switchToHttp().getRequest();
     const payload = decodeAuthToken(req.headers.authorization);
 
     if (!payload) {
-      return new AuthenticatedUser();
+      if (!data || !data.required) {
+        throw unauthorizedError;
+      } else {
+        return new AuthenticatedUser();
+      }
     }
 
     return new AuthenticatedUser(payload);
