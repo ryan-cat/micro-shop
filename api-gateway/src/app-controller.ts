@@ -1,37 +1,22 @@
-import { All, Controller, Inject, Req, Res } from '@nestjs/common';
-import { ConfigType, ConfigService } from '@nestjs/config';
-import { request, Request, Response } from 'express';
+import { JwtAuthGuard } from './jwt-utils';
+import { JwtService } from '@nestjs/jwt';
+import { All, Controller, Inject, Req, Res, UseGuards } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import { Request, Response } from 'express';
 import gateConfig from './gateway-config';
 import axios, { AxiosError } from 'axios';
 import * as queryString from 'query-string';
-import * as jwt from 'jsonwebtoken';
-import { NotFoundError, UnauthorizedError } from '@micro-shop/common';
+import { NotFoundError } from '@micro-shop/common';
 
 @Controller()
 export class AppController {
-  constructor(@Inject(gateConfig.KEY) private gatewayConfig: ConfigType<typeof gateConfig>, private configService: ConfigService) {}
+  constructor(@Inject(gateConfig.KEY) private gatewayConfig: ConfigType<typeof gateConfig>, private jwtService: JwtService) {}
 
+  @UseGuards(JwtAuthGuard)
   @All()
   async proxy(@Req() request: Request, @Res() response: Response) {
-    const authToken = request.headers.authorization;
-    if (authToken) {
-      await this.authenticate(authToken);
-    }
-
     const url = this.getProxyUrl(request);
     this.performProxy(url, request, response);
-  }
-
-  private authenticate(token: string): Promise<void> {
-    return new Promise((res, rej) => {
-      jwt.verify(token.replace('Bearer ', ''), this.configService.get<string>('JWT_ACCESS_KEY'), {}, async (err) => {
-        if (err || !token.startsWith('Bearer ')) {
-          rej(new UnauthorizedError('The provided token is either expired or invalid.'));
-        }
-
-        return res();
-      });
-    });
   }
 
   private getProxyUrl(request: Request): string {
