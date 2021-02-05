@@ -1,26 +1,26 @@
 import { User } from './../models/account-models';
-export class SignUpDto {
+export interface SignUpDto {
   email: string;
   name: string;
   password: string;
 }
 
-export class AuthenticateDto {
+export interface ValidateUserCredentialsDto {
   email: string;
   password: string;
 }
 
-export class AuthenticationResultDto {
+export interface AuthenticationResultDto {
   accessToken: string;
   refreshToken: string;
   user: User;
 }
 
-export class TokenRefreshDto {
+export interface TokenRefreshDto {
   refreshToken: string;
 }
 
-export class TokenRefreshResultDto {
+export interface TokenRefreshResultDto {
   accessToken: string;
   refreshToken: string;
 }

@@ -1,6 +1,7 @@
-import { AuthenticateDto, AuthenticationResultDto, SignUpDto, TokenRefreshDto, TokenRefreshResultDto } from './../types/account-types';
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { AuthenticationResultDto, SignUpDto, TokenRefreshDto, TokenRefreshResultDto } from './../types/account-types';
+import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Req } from '@nestjs/common';
 import { AccountService } from '../services/account-service';
+import { LocalAuthGuard } from '../utils/local-strategy';
 
 @Controller()
 export class AccountController {
@@ -12,9 +13,10 @@ export class AccountController {
     return this.accountService.signUp(body);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('authenticate')
-  authenticate(@Body() body: AuthenticateDto): Promise<AuthenticationResultDto> {
-    return this.accountService.authenticate(body);
+  authenticate(@Req() req): Promise<AuthenticationResultDto> {
+    return this.accountService.login(req.user);
   }
 
   @Post('token')

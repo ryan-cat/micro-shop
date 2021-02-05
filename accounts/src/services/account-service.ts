@@ -1,41 +1,44 @@
 import { isMongoUniqueError, NotFoundError, ValidationError, validate, BadRequestError, EventBus } from '@micro-shop/common';
-import { AuthenticateDtoValidator, SignUpDtoValidator } from './../validators/account-validators';
+import { SignUpDtoValidator } from './../validators/account-validators';
 import { User, UserDocument } from './../models/account-models';
-import { AuthenticateDto, SignUpDto, AuthenticationResultDto, TokenRefreshDto, TokenRefreshResultDto } from './../types/account-types';
+import { SignUpDto, AuthenticationResultDto, TokenRefreshDto, TokenRefreshResultDto } from './../types/account-types';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
 import { UserCreatedEvent, EventBusTopics } from '@micro-shop/common';
-
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AccountService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private bus: EventBus, private configService: ConfigService) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private bus: EventBus,
+    private configService: ConfigService,
+    private jwtService: JwtService
+  ) {}
 
-  async authenticate(dto: AuthenticateDto): Promise<AuthenticationResultDto> {
-    validate(dto, AuthenticateDtoValidator);
-
-    const user = await this.userModel.findOne({ email: dto.email });
+  async validateUserCredentials(email: string, password: string): Promise<UserDocument> {
+    const user = await this.userModel.findOne({ email });
 
     if (!user) {
       throw new NotFoundError('An account could not be found for this email.');
     }
 
-    const passwordCheck = await bcrypt.compare(dto.password, user.password);
+    const passwordCheck = await bcrypt.compare(password, user.password);
 
     if (!passwordCheck) {
-      throw new BadRequestError('Incorrect password provided for this account.');
+      return null;
     }
 
-    const accessToken = await this.getAccessToken(user.id, user.name, user.email);
-    const refreshToken = await this.getRefreshToken(user.id);
+    return user;
+  }
 
+  async login(user: UserDocument): Promise<AuthenticationResultDto> {
     return {
-      accessToken,
-      refreshToken,
-      user
+      user,
+      accessToken: await this.getAccessToken(user.id, user.name, user.email),
+      refreshToken: await this.getRefreshToken(user.id)
     };
   }
 
@@ -94,57 +97,28 @@ export class AccountService {
   }
 
   private getAccessToken(subject: string, name: string, email: string): Promise<string> {
-    return new Promise((res, rej) => {
-      jwt.sign(
-        {
-          name,
-          email
-        },
-        this.configService.get<string>('JWT_ACCESS_KEY'),
-        {
-          expiresIn: '30m',
-          subject
-        },
-        (err, result) => {
-          if (err) {
-            rej(err);
-          }
-
-          res(result);
-        }
-      );
-    });
+    return this.jwtService.signAsync(
+      { name, email },
+      {
+        secret: this.configService.get<string>('JWT_ACCESS_KEY'),
+        expiresIn: '30m',
+        subject
+      }
+    );
   }
 
   private getRefreshToken(subject: string): Promise<string> {
-    return new Promise((res, rej) => {
-      jwt.sign(
-        {},
-        this.configService.get<string>('JWT_REFRESH_KEY'),
-        {
-          expiresIn: '30d',
-          subject
-        },
-        (err, result) => {
-          if (err) {
-            rej(err);
-          }
-
-          res(result);
-        }
-      );
-    });
+    return this.jwtService.signAsync(
+      {},
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_KEY'),
+        subject,
+        expiresIn: '30d'
+      }
+    );
   }
 
   private verifyRefreshToken(token: string): Promise<{ id: string }> {
-    return new Promise((res, rej) => {
-      jwt.verify(token, this.configService.get<string>('JWT_REFRESH_KEY'), (err, result) => {
-        if (err) {
-          rej(err);
-        }
-
-        res(result as any);
-      });
-    });
+    return this.jwtService.verifyAsync(token, { secret: this.configService.get<string>('JWT_REFRESH_KEY') });
   }
 }
