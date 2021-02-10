@@ -1,16 +1,15 @@
-import { AuthUser, AuthenticatedUser } from '@micro-shop/common';
-import { CreateProductDto } from '../types/product-types';
-import { Product } from './../models/product-models';
+import { AuthUser, AuthenticatedUser, ListOptions } from '@micro-shop/common';
+import { CreateProductDto, ProductListDto, ProductSort } from '../types/product-types';
 import { ProductService } from '../services/product-service';
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 
 @Controller()
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getList(): Promise<Product[]> {
-    return this.productService.getProducts();
+  getList(@Query() query: ListOptions<ProductSort>): Promise<ProductListDto> {
+    return this.productService.getProducts(query);
   }
 
   @Post()
