@@ -6,7 +6,7 @@ const Layout: React.FC = () => {
   return (
     <>
       <NavBar />
-      <Box paddingY="1rem" paddingX="2rem">
+      <Box paddingY="1rem" paddingX="2rem" paddingBottom={50}>
         <Routes />
       </Box>
     </>
