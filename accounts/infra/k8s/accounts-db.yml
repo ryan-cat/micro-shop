@@ -56,13 +56,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: accounts-db-config
-          resources:
-            requests:
-              memory: '512Mi'
-              cpu: '250m'
-            limits:
-              memory: '1024Mi'
-              cpu: '500m'
           volumeMounts:
             - mountPath: /data/db
               name: accounts-db-v

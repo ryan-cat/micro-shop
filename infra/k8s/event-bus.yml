@@ -30,13 +30,6 @@ spec:
               "-cid",
               "micro-shop",
             ]
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1024Mi"
-              cpu: "500m"
           ports:
             - containerPort: 4222
 ---
