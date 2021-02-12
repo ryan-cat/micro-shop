@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: products
+  name: cart
 spec:
   selector:
     matchLabels:
-      app: products
+      app: cart
   template:
     metadata:
       labels:
-        app: products
+        app: cart
     spec:
       containers:
-        - name: products
-          image: micro-shop/products
+        - name: cart
+          image: micro-shop/cart
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: products-db-config
+                name: cart-db-config
             - configMapRef:
                 name: event-bus-config
           env:
@@ -34,10 +34,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-srv
+  name: cart-srv
 spec:
   selector:
-    app: products
+    app: cart
   ports:
     - port: 3000
       targetPort: 3000

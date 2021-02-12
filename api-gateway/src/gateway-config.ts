@@ -16,7 +16,8 @@ export default registerAs(
     prefix: '/api',
     services: [
       { name: 'products', paths: ['/products'], url: 'http://products-srv:3000' },
-      { name: 'accounts', paths: ['/accounts'], url: 'http://accounts-srv:3000' }
+      { name: 'accounts', paths: ['/accounts'], url: 'http://accounts-srv:3000' },
+      { name: 'cart', paths: ['/cart'], url: 'http://cart-srv:3000' }
     ]
   })
 );
