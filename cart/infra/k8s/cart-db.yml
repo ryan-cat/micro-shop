@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: accounts-db-config
+  name: cart-db-config
 data:
   MONGO_INITDB_ROOT_USERNAME: mongo
   MONGO_INITDB_ROOT_PASSWORD: password
-  MONGO_URL: accounts-db-srv:27017
+  MONGO_URL: cart-db-srv:27017
 ---
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: accounts-db-pv
+  name: cart-db-pv
   labels:
     type: local
-    app: accounts-db
+    app: cart-db
 spec:
   storageClassName: manual
   capacity:
@@ -21,14 +21,14 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: '/mnt/data/accounts-db'
+    path: '/mnt/data/cart-db'
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: accounts-db-pv-claim
+  name: cart-db-pv-claim
   labels:
-    app: accounts-db
+    app: cart-db
 spec:
   storageClassName: manual
   accessModes:
@@ -40,37 +40,37 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: accounts-db
+  name: cart-db
 spec:
   selector:
     matchLabels:
-      app: accounts-db
+      app: cart-db
   template:
     metadata:
       labels:
-        app: accounts-db
+        app: cart-db
     spec:
       containers:
-        - name: accounts-db
+        - name: cart-db
           image: mongo
           envFrom:
             - configMapRef:
-                name: accounts-db-config
+                name: cart-db-config
           volumeMounts:
             - mountPath: /data/db
-              name: accounts-db-v
+              name: cart-db-v
       volumes:
-        - name: accounts-db-v
+        - name: cart-db-v
           persistentVolumeClaim:
-            claimName: accounts-db-pv-claim
+            claimName: products-db-pv-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: accounts-db-srv
+  name: cart-db-srv
 spec:
   selector:
-    app: accounts-db
+    app: cart-db
   ports:
     - port: 27017
       targetPort: 27017

@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
+  name: cart
 spec:
   selector:
     matchLabels:
-      app: api-gateway
+      app: cart
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: cart
     spec:
       containers:
-        - name: api-gateway
-          image: micro-shop/api-gateway
+        - name: cart
+          image: micro-shop/cart
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: cart-db-config
+            - configMapRef:
+                name: event-bus-config
           env:
             - name: NODE_ENV
               value: DEVELOPMENT
-            - name: JWT_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: accounts-secret
-                  key: JWT_ACCESS_KEY
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway-srv
+  name: cart-srv
 spec:
   selector:
-    app: api-gateway
+    app: cart
   ports:
     - port: 3000
       targetPort: 3000
