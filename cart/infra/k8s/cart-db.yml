@@ -62,7 +62,7 @@ spec:
       volumes:
         - name: cart-db-v
           persistentVolumeClaim:
-            claimName: products-db-pv-claim
+            claimName: cart-db-pv-claim
 ---
 apiVersion: v1
 kind: Service

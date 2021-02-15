@@ -15,7 +15,7 @@ function setupNATS(options: EventBusModuleOptions, onConnect: (bus: EventBus) =>
   const stan = nats.connect(options.transportOptions.clusterId || 'micro-shop', options.transportOptions.clientId || randomBytes(4).toString('hex'), {
     url: options?.url
   });
-  const bus = new NatsEventBus(stan, options.transportOptions.queueName);
+  const bus = new NatsEventBus(stan, options.transportOptions.queueName, options.subscriptionOptions);
 
   stan.on('connect', () => {
     onConnect(bus);
@@ -42,6 +42,7 @@ export interface EventBusModuleSubscription<M = any> {
 export interface EventBusModuleOptions {
   url: string;
   subscriptions?: EventBusModuleSubscription[];
+  subscriptionOptions?: any;
   transportOptions: NATSOptions;
 }
 
