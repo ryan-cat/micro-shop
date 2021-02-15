@@ -1,4 +1,5 @@
 export enum EventBusTopics {
   UserCreated = 'accounts.user.created',
-  ProductCreated = 'products.product.created'
+  ProductCreated = 'products.product.created',
+  CartItemAdded = 'cart.cart-item.added'
 }

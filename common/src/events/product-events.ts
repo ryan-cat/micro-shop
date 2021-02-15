@@ -14,7 +14,7 @@ export interface ProductCreatedEvent extends IEvent {
     seller: {
       id: string;
       name: string;
-      updatedAt: string;
+      updatedAt: Date;
     };
   };
 }
