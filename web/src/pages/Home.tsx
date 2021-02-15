@@ -39,7 +39,7 @@ const Home = () => {
   };
 
   return (
-    <Page loading={loading} noData={!data} noDataText="No products to show.">
+    <Page loading={loading} noData={!data?.count} noDataText="No products to show.">
       <Box width="85%" mx="auto">
         <SimpleGrid columns={4} spacing={10}>
           {data?.items.map((x) => (
