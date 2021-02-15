@@ -1,3 +1,5 @@
+import { ProductCreatedEvent } from '@micro-shop/common';
+import { EventBus, EventBusTopics } from '@micro-shop/common';
 import { UserDocument, User } from '../models/user-models';
 import { CreateProductDtoValidator } from './../validators/product-validators';
 import { ProductDocument } from './../models/product-models';
@@ -10,7 +12,11 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectModel(Product.name) private productModel: Model<ProductDocument>, @InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private eventBus: EventBus
+  ) {}
 
   public async getProducts(listOptions: ListOptions<ProductSort> = null): Promise<ProductListDto> {
     const queryParams = getListQueryParams(listOptions, 'price', 'desc');
@@ -38,9 +44,31 @@ export class ProductService {
       throw new UnauthorizedError();
     }
 
-    return this.productModel.create({
+    const product = await this.productModel.create({
       ...dto,
       seller: user.sub
     });
+
+    const publishData: ProductCreatedEvent['data'] = {
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+      seller: {
+        id: seller.id,
+        name: seller.name,
+        updatedAt: seller.updatedAt
+      }
+    };
+
+    await this.eventBus.publish({
+      topic: EventBusTopics.ProductCreated,
+      data: publishData
+    });
+
+    return product;
   }
 }
