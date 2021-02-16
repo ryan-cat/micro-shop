@@ -24,7 +24,7 @@ export class CartService {
     }
 
     const cartItem = await this.cartItemModel.create({
-      productId: dto.productId,
+      product: dto.productId,
       userId: user.sub
     });
 

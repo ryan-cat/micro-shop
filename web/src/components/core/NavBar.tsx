@@ -1,8 +1,9 @@
-import { Box, Heading, Flex, Button } from '@chakra-ui/react';
+import { Box, Heading, Flex, Button, IconButton, Icon } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { logOut } from '../../store/actions/auth-actions';
+import { FaCartArrowDown } from 'react-icons/fa';
 
 const NavBar: React.FC = (props) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -15,13 +16,21 @@ const NavBar: React.FC = (props) => {
   return (
     <Flex as="nav" wrap="wrap" padding="1rem" paddingX="2rem" bg="brand.500" color="white" {...props}>
       <Flex align="center" justify="space-between" width="100%">
-        <Heading as={Link} to="/" size="lg">
-          Micro Shop
-        </Heading>
+        <Flex alignItems="center">
+          <Heading as={Link} to="/" size="lg" mr={35}>
+            Micro Shop
+          </Heading>
+
+          {isAuthenticated && (
+            <Button as={Link} to="/sell-product" color="brand.500">
+              Sell a Product
+            </Button>
+          )}
+        </Flex>
 
         {!isAuthenticated ? (
           <Box>
-            <Button as={Link} to="log-in" bg="transparent" mr="5px">
+            <Button as={Link} to="log-in" bg="transparent" mr={5}>
               Log In
             </Button>
 
@@ -32,9 +41,7 @@ const NavBar: React.FC = (props) => {
         ) : (
           <>
             <Box>
-              <Button as={Link} to="/sell-product" color="brand.500" mr="10px">
-                Sell a Product
-              </Button>
+              <IconButton bgColor="transparent" aria-label="Cart" mr={3} icon={<Icon boxSize={7} as={FaCartArrowDown} />} />
 
               <Button bg="transparent" onClick={handleLogOut}>
                 Log Out
