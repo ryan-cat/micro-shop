@@ -3,7 +3,7 @@ import { AuthenticatedUser, NotFoundError, validate, EventBus, EventBusTopics, C
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AddItemToCartDto } from '../types/cart-types';
+import { AddItemToCartDto, CartItemList } from '../types/cart-types';
 import { Product, ProductDocument } from '../models/product-models';
 import { AddItemToCartDtoValidator } from '../validators/cart-validators';
 
@@ -15,6 +15,17 @@ export class CartService {
     private eventBus: EventBus
   ) {}
 
+  async getCart(user: AuthenticatedUser): Promise<CartItemList> {
+    const query = this.cartItemModel.find({ userId: user.sub }).sort({ createdAt: 'desc' }).populate('product');
+    const cartItems = await query.exec();
+    const count = await query.countDocuments();
+
+    return {
+      items: cartItems,
+      count
+    };
+  }
+
   async addItemToCart(user: AuthenticatedUser, dto: AddItemToCartDto): Promise<CartItemDocument> {
     validate(dto, AddItemToCartDtoValidator);
 
@@ -23,10 +34,12 @@ export class CartService {
       throw new NotFoundError('The specified product could not be found.');
     }
 
-    const cartItem = await this.cartItemModel.create({
+    let cartItem = await this.cartItemModel.create({
       product: dto.productId,
       userId: user.sub
     });
+
+    cartItem = await cartItem.populate('product').execPopulate();
 
     const publishData: CartItemAddedEvent['data'] = {
       id: cartItem.id,
