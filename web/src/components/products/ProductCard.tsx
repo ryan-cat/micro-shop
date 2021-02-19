@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = (props) => {
   return (
     <Box alignItems="center" key={product.id}>
       <Center>
-        <Image fit="contain" src={product.imageUrl} />
+        <Image boxSize="200px" fit="contain" src={product.imageUrl} />
       </Center>
 
       <Text fontSize="3xl" color="blue.400" mt={5}>

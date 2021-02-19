@@ -61,4 +61,21 @@ export class CartService {
 
     return cartItem;
   }
+
+  async removeItemFromCart(user: AuthenticatedUser, id: string): Promise<void> {
+    const cartItem = await this.cartItemModel.findOne({ userId: user.sub, _id: id });
+
+    if (!cartItem) {
+      throw new NotFoundError('The specified cart item could not be found.');
+    }
+
+    await cartItem.delete();
+
+    await this.eventBus.publish({
+      topic: EventBusTopics.CartItemRemoved,
+      data: {
+        id: cartItem.id
+      }
+    });
+  }
 }
