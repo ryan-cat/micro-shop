@@ -44,10 +44,12 @@ export class ProductService {
       throw new UnauthorizedError();
     }
 
-    const product = await this.productModel.create({
+    let product = await this.productModel.create({
       ...dto,
       seller: user.sub
     });
+
+    product = await product.populate('seller').execPopulate();
 
     const publishData: ProductCreatedEvent['data'] = {
       id: product.id,

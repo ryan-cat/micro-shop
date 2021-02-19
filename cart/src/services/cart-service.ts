@@ -16,7 +16,7 @@ export class CartService {
   ) {}
 
   async getCart(user: AuthenticatedUser): Promise<CartItemList> {
-    const query = this.cartItemModel.find({ userId: user.sub }).populate('product');
+    const query = this.cartItemModel.find({ userId: user.sub }).sort({ createdAt: 'desc' }).populate('product');
     const cartItems = await query.exec();
     const count = await query.countDocuments();
 
@@ -34,10 +34,12 @@ export class CartService {
       throw new NotFoundError('The specified product could not be found.');
     }
 
-    const cartItem = await this.cartItemModel.create({
+    let cartItem = await this.cartItemModel.create({
       product: dto.productId,
       userId: user.sub
     });
+
+    cartItem = await cartItem.populate('product').execPopulate();
 
     const publishData: CartItemAddedEvent['data'] = {
       id: cartItem.id,
