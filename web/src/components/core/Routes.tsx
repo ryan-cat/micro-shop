@@ -1,13 +1,14 @@
 import { Switch, Route, Redirect, RouteProps, useLocation } from 'react-router-dom';
-import CreateAccount from '../../pages/CreateAccount';
-import LogIn from '../../pages/LogIn';
-import Home from '../../pages/Home';
 import { RootState } from '../../store';
 import { useDispatch, useSelector } from 'react-redux';
 import * as queryString from 'query-string';
 import { resetManualLogOut } from '../../store/actions/auth-actions';
 import { useEffect } from 'react';
+import CreateAccount from '../../pages/CreateAccount';
+import LogIn from '../../pages/LogIn';
+import Home from '../../pages/Home';
 import SellProduct from '../../pages/SellProduct';
+import Cart from '../../pages/Cart';
 
 const UnauthenticatedRoute: React.FC<RouteProps> = (props) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -61,6 +62,9 @@ const Routes = () => {
       </Route>
       <PrivateRoute path="/sell-product">
         <SellProduct />
+      </PrivateRoute>
+      <PrivateRoute path="/cart">
+        <Cart />
       </PrivateRoute>
     </Switch>
   );

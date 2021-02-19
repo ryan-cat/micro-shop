@@ -1,3 +1,5 @@
+import { List } from './general-types';
+
 export interface CartItem {
   id: string;
   userId: string;
@@ -9,3 +11,5 @@ export interface CartItem {
   };
   createdAt: Date;
 }
+
+export type CartItemList = List<CartItem>;

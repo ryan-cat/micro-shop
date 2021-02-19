@@ -41,7 +41,7 @@ const NavBar: React.FC = (props) => {
         ) : (
           <>
             <Box>
-              <IconButton bgColor="transparent" aria-label="Cart" mr={3} icon={<Icon boxSize={7} as={FaCartArrowDown} />} />
+              <IconButton as={Link} to="/cart" bgColor="transparent" aria-label="Cart" mr={3} icon={<Icon boxSize={7} as={FaCartArrowDown} />} />
 
               <Button bg="transparent" onClick={handleLogOut}>
                 Log Out
