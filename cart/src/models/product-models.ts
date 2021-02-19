@@ -1,16 +1,15 @@
+import { standardMongoJSON } from '@micro-shop/common';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
 @Schema({
-  toJSON: {
-    transform: (doc, ret) => {
-      ret.id = doc._id;
-      delete ret._id;
-      delete ret.__v;
+  toJSON: standardMongoJSON({
+    transform: (_, ret) => {
+      delete ret.updatedAt;
     }
-  }
+  })
 })
 export class Product {
   @Prop({ required: true, type: String })
@@ -22,7 +21,7 @@ export class Product {
   @Prop({ required: true, type: Number })
   price: number;
 
-  @Prop()
+  @Prop({ required: true, type: Date })
   updatedAt: Date;
 }
 
