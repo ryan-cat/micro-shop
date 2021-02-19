@@ -1,17 +1,15 @@
+import { standardMongoJSON } from '@micro-shop/common';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, model, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
 @Schema({
-  toJSON: {
-    transform: (doc, ret) => {
-      ret.id = doc._id;
-      delete ret._id;
-      delete ret.__v;
+  toJSON: standardMongoJSON({
+    transform: (_, ret) => {
       delete ret.updatedAt;
     }
-  }
+  })
 })
 export class User {
   @Prop({ type: Types.ObjectId })
@@ -23,7 +21,7 @@ export class User {
   @Prop({ unique: true, required: true, type: String })
   email: string;
 
-  @Prop()
+  @Prop({ required: true, type: Date })
   updatedAt: Date;
 }
 

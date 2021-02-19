@@ -546,10 +546,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@micro-shop/common@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@micro-shop/common/-/common-0.0.21.tgz#ed4e71f712a7f069b0f668422af760a9a2e0454c"
-  integrity sha512-z8cpShlrSEnawtsF3jlOdyUpphYffZkMvRBxBvFOfjVK0gaK7MoJdkIkLjgEGcfZpI2ejExxtK93YoXbPlsy/g==
+"@micro-shop/common@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@micro-shop/common/-/common-0.0.23.tgz#6787a64e7ba818119961993c908105a949060a52"
+  integrity sha512-BCP52vM61mh2sJSUGPvpDzhb4modMCHmnipr71jqjnxGXXc08Yljc4zvbJtXm2VH44kAGKO68k7aMwSj7ajsfQ==
   dependencies:
     "@nestjs/common" "^7.6.9"
     "@nestjs/core" "^7.6.9"
