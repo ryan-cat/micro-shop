@@ -1,4 +1,16 @@
+import { AxiosError } from 'axios';
 export const internalServerError = 'Oops! Something went wrong! Please try again.';
+
+export const parseErrorMessage = (error: AxiosError | null, data?: any) => {
+  let message = error?.response?.data.message || '';
+  if (error && data && Object.keys(data).length !== 0) {
+    return '';
+  } else if (error && !message) {
+    return internalServerError;
+  }
+
+  return '';
+};
 
 type ValidationErrorField = (string | number)[];
 
