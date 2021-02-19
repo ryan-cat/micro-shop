@@ -1,9 +1,10 @@
 import { Product } from '../../types/product-types';
-import { Box, Text, Image, Center, Button } from '@chakra-ui/react';
+import { Box, Text, Image, Center, Button, useToast } from '@chakra-ui/react';
 import useAxios from 'axios-hooks';
 import { CartItem } from '../../types/cart-types';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../store/actions/cart-actions';
+import { parseErrorMessage } from '../../utils/error-utils';
 
 export interface ProductCardProps {
   product: Product;
@@ -13,8 +14,9 @@ const ProductCard: React.FC<ProductCardProps> = (props) => {
   const { product } = props;
 
   const dispatch = useDispatch();
+  const toast = useToast();
 
-  const [_, addToCart] = useAxios<CartItem>(
+  const [{ loading }, addToCart] = useAxios<CartItem>(
     {
       url: '/cart',
       method: 'POST'
@@ -26,7 +28,19 @@ const ProductCard: React.FC<ProductCardProps> = (props) => {
     try {
       const result = await addToCart({ data: { productId: product.id } });
       dispatch(addItemToCart(result.data));
-    } catch (err) {}
+
+      toast({
+        title: 'Added Item to Cart!',
+        status: 'success',
+        isClosable: true
+      });
+    } catch (err) {
+      toast({
+        title: parseErrorMessage(err),
+        status: 'error',
+        isClosable: true
+      });
+    }
   };
 
   return (
@@ -48,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = (props) => {
       </Text>
 
       <Center mt={5}>
-        <Button bgColor="gray.300" onClick={() => handleAddToCart(product)}>
+        <Button bgColor="gray.300" disabled={loading} onClick={() => handleAddToCart(product)}>
           Add to Cart
         </Button>
       </Center>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AxiosError } from 'axios';
-import { internalServerError, ValidationErrors } from '../utils/error-utils';
+import { parseErrorMessage, ValidationErrors } from '../utils/error-utils';
 
 interface UseApiErrorHandlerOutput {
   error: AxiosError | null;
@@ -30,13 +30,7 @@ const useApiErrorHandler = (err: AxiosError | null = null): UseApiErrorHandlerOu
     const code = error?.response?.status || null;
     let data = error?.response?.data.data || {};
     let validationErrors = new ValidationErrors(error?.response?.data.data.errors || []);
-
-    let message = error?.response?.data.message || '';
-    if (error && Object.keys(data).length !== 0) {
-      message = '';
-    } else if (error && !message) {
-      message = internalServerError;
-    }
+    let message = parseErrorMessage(error, data);
 
     setCode(code);
     setName(name);

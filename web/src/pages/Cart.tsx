@@ -1,17 +1,19 @@
 import { Box, Container, Divider, Flex, Text } from '@chakra-ui/layout';
-import { Icon, IconButton, Image } from '@chakra-ui/react';
+import { Icon, IconButton, Image, useToast } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { FaTrash } from 'react-icons/fa';
 import useAxios from 'axios-hooks';
 import { CartItem } from '../types/cart-types';
 import { removeItemFromCart } from '../store/actions/cart-actions';
+import { parseErrorMessage } from '../utils/error-utils';
 
 const Cart: React.FC = () => {
   const { items } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
+  const toast = useToast();
 
-  const [_, removeFromCart] = useAxios(
+  const [{ loading }, removeFromCart] = useAxios(
     {
       method: 'DELETE'
     },
@@ -29,10 +31,24 @@ const Cart: React.FC = () => {
   }
 
   const handleRemoveFromCart = async (item: CartItem) => {
-    await removeFromCart({
-      url: `/cart/${item.id}`
-    });
-    dispatch(removeItemFromCart(item));
+    try {
+      await removeFromCart({
+        url: `/cart/${item.id}`
+      });
+      dispatch(removeItemFromCart(item));
+
+      toast({
+        title: 'Removed Item to Cart!',
+        status: 'success',
+        isClosable: true
+      });
+    } catch (err) {
+      toast({
+        title: parseErrorMessage(err),
+        status: 'error',
+        isClosable: true
+      });
+    }
   };
 
   return (
@@ -55,7 +71,7 @@ const Cart: React.FC = () => {
               </Text>
             </Box>
 
-            <IconButton aria-label="Remove Cart Item" icon={<Icon as={FaTrash} />} onClick={() => handleRemoveFromCart(x)} />
+            <IconButton aria-label="Remove Cart Item" icon={<Icon as={FaTrash} />} disabled={loading} onClick={() => handleRemoveFromCart(x)} />
           </Flex>
 
           {index !== items.length - 1 && <Divider my={10} />}
