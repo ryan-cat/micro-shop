@@ -1,6 +1,6 @@
 import { CartItemDocument } from './../models/cart-models';
 import { AuthenticatedUser, AuthUser } from '@micro-shop/common';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CartService } from '../services/cart-service';
 import { AddItemToCartDto, CartItemList } from '../types/cart-types';
 
@@ -16,5 +16,10 @@ export class CartController {
   @Post()
   addItemToCart(@AuthUser() user: AuthenticatedUser, @Body() body: AddItemToCartDto): Promise<CartItemDocument> {
     return this.cartService.addItemToCart(user, body);
+  }
+
+  @Delete(':id')
+  deleteItemFromCart(@AuthUser() user: AuthenticatedUser, @Param('id') id: string): Promise<void> {
+    return this.cartService.removeItemFromCart(user, id);
   }
 }

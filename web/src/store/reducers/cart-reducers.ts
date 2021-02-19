@@ -25,6 +25,12 @@ const cartReducer = (state: CartState = initialState, action: CartActions): Cart
         items: action.cartItems,
         count: action.cartItems.length
       };
+    case 'REMOVE_ITEM_FROM_CART':
+      return {
+        ...state,
+        items: state.items.filter((x) => x.id !== action.cartItem.id),
+        count: state.count - 1
+      };
     default:
       return state;
   }

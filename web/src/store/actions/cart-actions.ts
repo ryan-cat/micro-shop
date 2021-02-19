@@ -15,3 +15,10 @@ export const addItemToCart = (cartItem: CartItem) => (dispatch: Dispatch<CartAct
     cartItem
   });
 };
+
+export const removeItemFromCart = (cartItem: CartItem) => (dispatch: Dispatch<CartActions>) => {
+  dispatch({
+    type: 'REMOVE_ITEM_FROM_CART',
+    cartItem
+  });
+};

@@ -15,3 +15,10 @@ export interface CartItemAddedEvent {
     createdAt: Date;
   };
 }
+
+export interface CartItemRemoveEvent {
+  topic: EventBusTopics.CartItemRemoved;
+  data: {
+    id: string;
+  };
+}
