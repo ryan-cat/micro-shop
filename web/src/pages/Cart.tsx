@@ -7,6 +7,7 @@ import useAxios from 'axios-hooks';
 import { CartItem } from '../types/cart-types';
 import { removeItemFromCart } from '../store/actions/cart-actions';
 import { parseErrorMessage } from '../utils/error-utils';
+import moment from 'moment';
 
 const Cart: React.FC = () => {
   const { items } = useSelector((state: RootState) => state.cart);
@@ -51,32 +52,46 @@ const Cart: React.FC = () => {
     }
   };
 
+  const totalPrice = () => {
+    return (
+      <Text fontSize="2xl" textAlign="right">
+        Total: ${items.reduce((a, item) => a + item.product.price, 0)}
+      </Text>
+    );
+  };
+
   return (
     <Container>
-      {items.map((x, index) => (
-        <Box key={x.id}>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Box>
-              <Flex>
-                <Image boxSize="100px" fit="contain" src={x.product.imageUrl} />
+      {totalPrice()}
 
-                <Box ml={10}>
-                  <Text fontSize="4xl">{x.product.name}</Text>
-                  <Text fontSize="2xl">${x.product.price}</Text>
-                </Box>
-              </Flex>
+      <Box my={5}>
+        {items.map((x, index) => (
+          <Box key={x.id}>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Box>
+                <Flex>
+                  <Image boxSize="100px" fit="contain" src={x.product.imageUrl} />
 
-              <Text mt={5} fontStyle="italic" color="gray.500">
-                Added On: {new Date(x.createdAt).toDateString()}
-              </Text>
-            </Box>
+                  <Box ml={10}>
+                    <Text fontSize="4xl">{x.product.name}</Text>
+                    <Text fontSize="2xl">${x.product.price}</Text>
+                  </Box>
+                </Flex>
 
-            <IconButton aria-label="Remove Cart Item" icon={<Icon as={FaTrash} />} disabled={loading} onClick={() => handleRemoveFromCart(x)} />
-          </Flex>
+                <Text mt={5} fontStyle="italic" color="gray.500">
+                  Added on {moment(x.createdAt).format('LL')}
+                </Text>
+              </Box>
 
-          {index !== items.length - 1 && <Divider my={10} />}
-        </Box>
-      ))}
+              <IconButton aria-label="Remove Cart Item" icon={<Icon as={FaTrash} />} disabled={loading} onClick={() => handleRemoveFromCart(x)} />
+            </Flex>
+
+            {index !== items.length - 1 && <Divider my={10} />}
+          </Box>
+        ))}
+      </Box>
+
+      {totalPrice()}
     </Container>
   );
 };
