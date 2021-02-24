@@ -20,6 +20,8 @@ spec:
                 name: db-config
             - configMapRef:
                 name: event-bus-config
+            - configMapRef:
+                name: cache-config
           env:
             - name: NODE_ENV
               value: DEVELOPMENT

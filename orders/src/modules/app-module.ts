@@ -13,13 +13,13 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forRootAsync({
       useFactory: databaseConfig
     }),
-    OrderModule,
     EventBusModule.register({
       url: process.env.EVENT_BUS_URL,
       transportOptions: {
         queueName: 'order-service'
       }
-    })
+    }),
+    OrderModule
   ]
 })
 export class AppModule {}
