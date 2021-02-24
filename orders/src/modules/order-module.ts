@@ -1,14 +1,9 @@
 import { OrderService } from '../services/order-service';
 import { OrderController } from '../controllers/order-controller';
-import { Module, CacheModule } from '@nestjs/common';
-import cacheConfig from 'src/configs/cache-config';
+import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [
-    CacheModule.registerAsync({
-      useFactory: cacheConfig
-    })
-  ],
+  imports: [],
   providers: [OrderService],
   controllers: [OrderController]
 })

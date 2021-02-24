@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { OrderModule } from './order-module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CheckoutModule } from './checkout-module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { MongooseModule } from '@nestjs/mongoose';
         queueName: 'order-service'
       }
     }),
-    OrderModule
+    OrderModule,
+    CheckoutModule
   ]
 })
 export class AppModule {}
