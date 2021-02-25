@@ -23,6 +23,8 @@ const Cart: React.FC = () => {
     }
   );
 
+  const total = items.reduce((a, item) => a + item.product.price, 0);
+
   if (items.length === 0) {
     return (
       <Text align="center" fontSize="3xl">
@@ -55,7 +57,7 @@ const Cart: React.FC = () => {
   const totalPrice = () => {
     return (
       <Text fontSize="2xl" textAlign="right">
-        Total: ${items.reduce((a, item) => a + item.product.price, 0)}
+        Total: ${total}
       </Text>
     );
   };
