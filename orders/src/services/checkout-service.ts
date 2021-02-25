@@ -32,13 +32,13 @@ export class CheckoutService {
     }
 
     const subtotal = products.reduce((val, item) => val + item.price, 0);
-    const tax = Math.ceil(subtotal * 0.07 * 100) / 100;
-    const total = Math.ceil(subtotal + tax * 100) / 100;
+    const estimatedTax = Math.ceil(subtotal * 0.07 * 100) / 100;
+    const total = Math.ceil(subtotal + estimatedTax * 100) / 100;
 
     const value: CheckoutSession = {
       products: products.map((x) => ({ id: x.id, price: x.price })),
       subtotal,
-      tax,
+      estimatedTax,
       total
     };
 
@@ -48,7 +48,7 @@ export class CheckoutService {
       id: sessionId,
       products,
       subtotal,
-      tax,
+      estimatedTax,
       total
     };
   }

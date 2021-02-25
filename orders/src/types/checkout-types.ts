@@ -2,11 +2,15 @@ import { ProductDocument } from './../models/product-models';
 
 export interface CheckoutDto {
   productIds: string[];
+  billing: {
+    state: string;
+    country: string;
+  };
 }
 
 interface CheckoutPricing {
   subtotal: number;
-  tax: number;
+  estimatedTax: number;
   total: number;
 }
 
