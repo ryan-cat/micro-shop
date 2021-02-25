@@ -18,5 +18,6 @@ export interface CheckoutSession extends CheckoutPricing {
 }
 
 export interface CheckoutDetails extends CheckoutPricing {
+  id: string;
   products: ProductDocument[];
 }

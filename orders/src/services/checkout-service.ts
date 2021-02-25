@@ -11,14 +11,15 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class CheckoutService {
-  private static readonly CHECKOUT_SESSION_TTL = 60 * 60 * 24 * 3; // 3 days
+  private static readonly CHECKOUT_SESSION_TTL = 60 * 60; // 1 hour
 
   constructor(@InjectModel(Product.name) private productModel: Model<ProductDocument>, @Inject(CACHE_MANAGER) private cache: Cache) {}
 
   async checkout(user: AuthenticatedUser, dto: CheckoutDto) {
     validate(dto, CheckoutValidator);
 
-    const id = `${uuid()}_${user.sub}`;
+    const sessionId = uuid();
+    const id = `${sessionId}_${user.sub}`;
 
     const products = await this.productModel.find({
       _id: {
@@ -44,6 +45,7 @@ export class CheckoutService {
     await this.cache.set(id, value, { ttl: CheckoutService.CHECKOUT_SESSION_TTL });
 
     return {
+      id: sessionId,
       products,
       subtotal,
       tax,
