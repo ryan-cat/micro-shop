@@ -2,10 +2,7 @@ import { ProductDocument } from './../models/product-models';
 
 export interface CheckoutDto {
   productIds: string[];
-  billing: {
-    state: string;
-    country: string;
-  };
+  billingState: string;
 }
 
 interface CheckoutPricing {
@@ -19,6 +16,7 @@ export interface CheckoutSession extends CheckoutPricing {
     id: string;
     price: number;
   }[];
+  billingState: string;
 }
 
 export interface CheckoutDetails extends CheckoutPricing {
